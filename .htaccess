@@ -1,49 +1,92 @@
+# =====================================================================
+#  .htaccess — D-FAULT PARKED
+# ---------------------------------------------------------------------
+#  Apache reads this file on every request. Sections:
+#  1. Basics   2. Blocked paths   3. Redirects   4. Security headers
+#  5. Compression   6. Caching   7. Error pages
+#
+#  HTTP -> HTTPS is not here: the host's nginx already redirects every
+#  http:// request to https:// before Apache sees it.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# 1. BASICS
+# ---------------------------------------------------------------------
+# -Indexes: never list a folder's files.
+# -MultiViews: no guessing, e.g. answering /404 with 404.php on its own.
+Options -Indexes -MultiViews
+AddDefaultCharset UTF-8
 RewriteEngine On
 
-# ---------------------------------------------------------------
-# SECURITY
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------------
+# 2. BLOCKED PATHS (answered with the 403 page)
+# ---------------------------------------------------------------------
+# config.php and partials/ only work when a page includes them.
+RewriteRule ^(config\.php|partials/) - [F]
+# Top-level names starting with "_" are private: _docs/, _originals/, _tests/.
+RewriteRule ^_ - [F]
+# Anything starting with a dot (.git/, .gitignore, .env ...), except
+# .well-known/, which certificate checks and security.txt use.
+RewriteRule (^|/)\.(?!well-known/) - [F]
 
-# Block direct access to config and any other PHP includes
-<FilesMatch "^config\.php$">
-	Require all denied
-</FilesMatch>
+# ---------------------------------------------------------------------
+# 3. REDIRECTS
+# ---------------------------------------------------------------------
+# www.example.com/anything -> https://example.com/anything. One rule
+# covers every parked domain: %1 is whatever followed "www.", minus
+# any :port.
+RewriteCond %{HTTP_HOST} ^www\.([^:]+)(:\d+)?$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L,NE]
 
-# Disable directory listing
-Options -Indexes
+# /index.php -> / so the page has one address. The REDIRECT_STATUS test
+# skips Apache's internal passes (like loading an error page); only the
+# visitor's own request may trigger the redirect.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^index\.php$ / [R=301,L]
 
-# Security headers
+# ---------------------------------------------------------------------
+# 4. SECURITY HEADERS
+# ---------------------------------------------------------------------
+# "always" also adds them to error pages (403/404).
 <IfModule mod_headers.c>
 	Header always set X-Frame-Options "SAMEORIGIN"
 	Header always set X-Content-Type-Options "nosniff"
 	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+	Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	# Don't advertise the PHP version.
+	Header unset X-Powered-By
+	Header always unset X-Powered-By
 </IfModule>
 
-# ---------------------------------------------------------------
-# REWRITES
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------------
+# 5. COMPRESSION (gzip text files; JPGs are already compressed)
+# ---------------------------------------------------------------------
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html text/css text/plain text/javascript application/javascript image/svg+xml image/x-icon image/vnd.microsoft.icon
+</IfModule>
 
-# 1. Redirect .php extension requests to trailing-slash clean URL (e.g. /page.php → /page/)
-RewriteCond %{THE_REQUEST} \s/+(.+)\.php[\s?] [NC]
-RewriteRule ^ /%1/ [R=301,L,NE]
+# ---------------------------------------------------------------------
+# 6. CACHING
+# ---------------------------------------------------------------------
+# CSS, JS and background images are linked with ?v=<modified time>
+# (asset() in partials/helpers.php), so a changed file gets a new URL.
+# That makes a 1-year cache safe. HTML is never cached, so config and
+# copy changes show up immediately.
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 0 seconds"
+	ExpiresByType text/html "access plus 0 seconds"
+	ExpiresByType text/css "access plus 1 year"
+	ExpiresByType text/javascript "access plus 1 year"
+	ExpiresByType application/javascript "access plus 1 year"
+	ExpiresByType image/jpeg "access plus 1 year"
+	ExpiresByType image/png "access plus 1 year"
+	ExpiresByType image/x-icon "access plus 1 month"
+	ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+</IfModule>
 
-# 2. Redirect clean URLs without trailing slash (e.g. /page → /page/)
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} !/$
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.+)$ /$1/ [R=301,L]
-
-# 3. Internally rewrite trailing-slash clean URLs to .php (e.g. /page/ → page.php)
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} /$
-RewriteCond %{REQUEST_FILENAME%/}\.php -f
-RewriteRule ^(.*)/$ $1.php [L]
-
-# ---------------------------------------------------------------
-# ERROR PAGES
-# ---------------------------------------------------------------
-
+# ---------------------------------------------------------------------
+# 7. ERROR PAGES
+# ---------------------------------------------------------------------
 ErrorDocument 404 /404.php
 ErrorDocument 403 /403.php
