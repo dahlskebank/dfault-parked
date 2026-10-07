@@ -129,6 +129,7 @@ foreach ($pages as $page => $p) {
 		$seo   = $known && $p['home'];
 		$img   = $s['background_image'];
 		$url   = "https://$key/";
+		$wantAccent = strtolower($s['accent']);
 
 		check($err === '', "$label PHP printed: " . strtok($err, "\n"));
 		check($i['title'] === ($known ? "{$s['title']} | {$p['suffix']}" : $p['suffix']), "$label title is '{$i['title']}'");
@@ -143,6 +144,25 @@ foreach ($pages as $page => $p) {
 		if ($img) {
 			check(strpos((string) $i['style'], $img . '?v=') !== false, "$label background image missing or not cache-busted");
 		}
+		if ($img) {
+			check(is_file($root . $img), "$label background image file missing: $img");
+		}
+		check($i['theme'] === $wantAccent, "$label theme-color is '{$i['theme']}', expected $wantAccent");
+		check(strpos((string) $i['style'], "--accent: $wantAccent;") !== false, "$label --accent is not $wantAccent");
+	}
+}
+
+// Accent validation (Review Focus 2): a bad value must never reach the CSS.
+if (!$dumpOnly) {
+	require_once $root . '/partials/helpers.php';
+	if (function_exists('color_or')) {
+		check(color_or('#A1B2C3', '#ffc107') === '#a1b2c3', 'color_or keeps a valid colour, lower-cased');
+		check(color_or('#ffc10', '#ffc107') === '#ffc107', 'color_or rejects a 5-digit typo');
+		check(color_or('red', '#ffc107') === '#ffc107', 'color_or rejects colour names');
+		check(color_or('#fff;}body{display:none', '#ffc107') === '#ffc107', 'color_or rejects CSS injection');
+		check(color_or(null, '#ffc107') === '#ffc107', 'color_or handles a missing value');
+	} else {
+		check(false, 'color_or() is not defined in partials/helpers.php');
 	}
 }
 

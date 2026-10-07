@@ -17,3 +17,11 @@ function asset($path) {
 	$file = dirname(__DIR__) . $path;
 	return is_file($file) ? $path . '?v=' . filemtime($file) : $path;
 }
+
+// color_or(): return $value as a lowercase 6-digit hex colour ('#a1b2c3'),
+// or $fallback if it isn't one. The result is printed inside CSS, so
+// anything else (typos, colour names, injected CSS) is rejected.
+function color_or($value, $fallback) {
+	$value = strtolower(trim((string) $value));
+	return preg_match('/^#[0-9a-f]{6}$/', $value) ? $value : $fallback;
+}

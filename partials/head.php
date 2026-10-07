@@ -36,6 +36,7 @@ $description = $isKnown ? 'D-FAULT PARKED | Coming soon page for ' . $settings['
 // Only accept image paths shaped like /img/name.ext, because the value is
 // printed inside CSS, where HTML escaping doesn't protect anything.
 $bgImage = preg_match('#^/img/[\w.-]+$#', $settings['background_image']) ? $settings['background_image'] : '';
+$accent  = color_or($settings['accent'], $defaults['accent']);
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100" data-bs-theme="dark">
@@ -45,7 +46,8 @@ $bgImage = preg_match('#^/img/[\w.-]+$#', $settings['background_image']) ? $sett
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<meta name="description" content="<?= e($description) ?>">
-	<meta name="theme-color" content="#0f172a">
+	<!-- Tints Chrome's toolbar on Android in this domain's colour -->
+	<meta name="theme-color" content="<?= e($accent) ?>">
 	<!-- <meta name="author" content="Daniel Dahl"> -->
 	<meta name="robots" content="<?= e($robots) ?>" />
 	<title><?= e($fullTitle) ?></title>
@@ -71,8 +73,9 @@ $bgImage = preg_match('#^/img/[\w.-]+$#', $settings['background_image']) ? $sett
 		gtag('config', <?= json_encode($settings['ga_id']) ?>);
 	</script>
 <?php endif; ?>
-<?php if ($bgImage !== ''): ?>
 	<style>
+		:root { --accent: <?= $accent ?>; }
+<?php if ($bgImage !== ''): ?>
 		.bg-image {
 			background-image:
 				linear-gradient(rgba(0, 0, 0, <?= (float) $settings['overlay_opacity'] ?>),
@@ -80,8 +83,8 @@ $bgImage = preg_match('#^/img/[\w.-]+$#', $settings['background_image']) ? $sett
 				url('<?= asset($bgImage) ?>') !important;
 			opacity: <?= (float) $settings['bg_opacity'] ?>;
 		}
-	</style>
 <?php endif; ?>
+	</style>
 <?php if ($showSeo): ?>
 
 	<meta property="og:type" content="website" />

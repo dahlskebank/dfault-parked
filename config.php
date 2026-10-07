@@ -65,7 +65,7 @@ $configs = [
 	],
 	'cybabes.org' => [
 		'title'				=> 'Cybabes Society',
-		'background_image'	=> '/img/cybabes.png',
+		'background_image'	=> '/img/cybabes.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.55,
 		'og_title'			=> 'Cybabes | Your AI Waifus Are Finally Online (Fashionably 27 Years Late)',
@@ -73,7 +73,7 @@ $configs = [
 	],
 	'cybocop.com' => [
 		'title'				=> 'Cybo Cop (TV Series)',
-		'background_image'	=> '/img/cybocop.png',
+		'background_image'	=> '/img/cybocop.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.35,
 		'og_title'			=> 'Cybocop | Half Cop, Half Machine, All Existential Dread',
@@ -81,7 +81,7 @@ $configs = [
 	],
 	'dahlskebank.com' => [
 		'title'				=> 'Dahlske Bank',
-		'background_image'	=> '/img/dahlskebank.png',
+		'background_image'	=> '/img/dahlskebank.jpg',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.25,
 		'og_title'			=> 'Dahlske Bank | Norwegian Banking With Questionable Ethics',
@@ -89,7 +89,7 @@ $configs = [
 	],
 	'danieldahl.com' => [
 		'title'				=> 'Daniel Dahl',
-		'background_image'	=> '/img/danieldahl.png',
+		'background_image'	=> '/img/danieldahl.jpg',
 		'bg_opacity'		=> 0.55,
 		'overlay_opacity'	=> 0.65,
 		'og_title'			=> 'Daniel Dahl | Professional Human, Amateur God',
@@ -97,7 +97,7 @@ $configs = [
 	],
 	'darkdictator.com' => [
 		'title'				=> 'The Dark Dictator',
-		'background_image'	=> '/img/darkdictator.png',
+		'background_image'	=> '/img/darkdictator.jpg',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.50,
 		'og_title'			=> 'Dark Dictator | Yes We\'re The Villains And We\'re Honest About It',
@@ -113,7 +113,7 @@ $configs = [
 	],
 	'iliketomovie.com' => [
 		'title'				=> 'I Like To Movie',
-		'background_image'	=> '/img/iliketomovie.png',
+		'background_image'	=> '/img/iliketomovie.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.50,
 		'og_title'			=> 'I Like To Movie | I Don\'t Watch Films, I Mainline Them Like Heroin',
@@ -121,7 +121,7 @@ $configs = [
 	],
 	'iliveagain.com' => [
 		'title'				=> 'I Live Again',
-		'background_image'	=> '/img/iliveagain.png',
+		'background_image'	=> '/img/iliveagain.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.50,
 		'og_title'			=> 'I Live Again | Death Was A Phase',
@@ -129,7 +129,7 @@ $configs = [
 	],
 	'kennywang.com' => [
 		'title'				=> 'Kenny Wang',
-		'background_image'	=> '/img/kennywang.png',
+		'background_image'	=> '/img/kennywang.jpg',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.50,
 		'og_title'			=> 'Kenny Wang | 100% Real Human Person (Source: Dude Trust Me)',
@@ -137,7 +137,7 @@ $configs = [
 	],
 	'kiande.com' => [
 		'title'				=> 'KiAnDe',
-		'background_image'	=> '/img/kiande.png',
+		'background_image'	=> '/img/kiande.jpg',
 		'bg_opacity'		=> 0.50,
 		'overlay_opacity'	=> 0.50,
 		'og_title'			=> 'KiAnDe | Alien Queen In A Human Suit',
@@ -145,7 +145,7 @@ $configs = [
 	],
 	'killingheat.com' => [
 		'title'				=> 'Killing Heat',
-		'background_image'	=> '/img/killingheat.png',
+		'background_image'	=> '/img/killingheat.jpg',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.25,
 		'og_title'			=> 'Killing Heat | So Hot It Should Be Classified As A War Crime',
@@ -153,7 +153,7 @@ $configs = [
 	],
 	'marxisthunter.com' => [
 		'title'				=> 'Marxist Hunter',
-		'background_image'	=> '/img/marxisthunter.png',
+		'background_image'	=> '/img/marxisthunter.jpg',
 		'bg_opacity'		=> 0.50,
 		'overlay_opacity'	=> 0.30,
 		'og_title'			=> 'Marxist Hunter | From Each According To His Ability, To Each According To My 12-Gauge',
@@ -161,7 +161,7 @@ $configs = [
 	],
 	'meatfetish.com' => [
 		'title'				=> 'Meat Fetish',
-		'background_image'	=> '/img/meatfetish.png',
+		'background_image'	=> '/img/meatfetish.jpg',
 		'bg_opacity'		=> 0.45,
 		'overlay_opacity'	=> 0.20,
 		'og_title'			=> 'Meat Fetish | We Don\'t Eat The Meat... We Fuck It',
@@ -177,7 +177,7 @@ $configs = [
 	],
 	'meloslave.com' => [
 		'title'				=> 'Meloslave',
-		'background_image'	=> '/img/meloslave.png',
+		'background_image'	=> '/img/meloslave.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.25,
 		'og_title'			=> 'Meloslave | Submit To The Beat And Call Me Master',
@@ -185,7 +185,7 @@ $configs = [
 	],
 	'reservedekk.no' => [
 		'title'				=> 'Reservedekk',
-		'background_image'	=> '/img/reservedekk.png',
+		'background_image'	=> '/img/reservedekk.jpg',
 		'bg_opacity'		=> 0.55,
 		'overlay_opacity'	=> 0.20,
 		'og_title'			=> 'Reserved Ekk | Norwegian For "Emotionally Constipated By Choice"',
