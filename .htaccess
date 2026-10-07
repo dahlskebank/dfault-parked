@@ -1,0 +1,49 @@
+RewriteEngine On
+
+# ---------------------------------------------------------------
+# SECURITY
+# ---------------------------------------------------------------
+
+# Block direct access to config and any other PHP includes
+<FilesMatch "^config\.php$">
+	Require all denied
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes
+
+# Security headers
+<IfModule mod_headers.c>
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---------------------------------------------------------------
+# REWRITES
+# ---------------------------------------------------------------
+
+# 1. Redirect .php extension requests to trailing-slash clean URL (e.g. /page.php → /page/)
+RewriteCond %{THE_REQUEST} \s/+(.+)\.php[\s?] [NC]
+RewriteRule ^ /%1/ [R=301,L,NE]
+
+# 2. Redirect clean URLs without trailing slash (e.g. /page → /page/)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !/$
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.+)$ /$1/ [R=301,L]
+
+# 3. Internally rewrite trailing-slash clean URLs to .php (e.g. /page/ → page.php)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} /$
+RewriteCond %{REQUEST_FILENAME%/}\.php -f
+RewriteRule ^(.*)/$ $1.php [L]
+
+# ---------------------------------------------------------------
+# ERROR PAGES
+# ---------------------------------------------------------------
+
+ErrorDocument 404 /404.php
+ErrorDocument 403 /403.php
