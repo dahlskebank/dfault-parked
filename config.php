@@ -1,14 +1,46 @@
 <?php
-// ====================== PARKED DOMAINS CONFIG ======================
-// Add every new domain here. Super easy to maintain.
+// =====================================================================
+//  D-FAULT PARKED — domain config
+// ---------------------------------------------------------------------
+//  Every parked domain points at this same folder. This file works out
+//  which domain the visitor typed, then picks that domain's settings.
+//
+//  Adding a domain: put its image in /img/, then add an entry to
+//  $configs below with only the keys that differ from $defaults.
+// =====================================================================
 
-$host = strtolower(trim($_SERVER['HTTP_HOST'] ?? ''));
-$domain = preg_replace('/^www\./i', '', $host);   // strip www. automatically
+// ---------------------------------------------------------------------
+// 1. Which domain is this?
+// ---------------------------------------------------------------------
+// HTTP_HOST is whatever the browser sent, e.g. "www.Kiande.com",
+// "kiande.com:443" or "kiande.com." (a trailing dot is valid DNS).
+// Normalise so all of those match the 'kiande.com' key.
+$host   = strtolower(trim($_SERVER['HTTP_HOST'] ?? ''));
+$host   = preg_replace('/:\d+$/', '', $host);   // strip :port
+$host   = rtrim($host, '.');                    // strip trailing dot
+$domain = preg_replace('/^www\./', '', $host);  // strip www.
 
+// ---------------------------------------------------------------------
+// 2. Defaults — every setting a domain can have, with its fallback
+// ---------------------------------------------------------------------
+$defaults = [
+	'title'            => 'Coming Soon',
+	'background_image' => '',        // '/img/name.jpg', or '' for gradient only
+	'bg_opacity'       => 0.50,      // opacity of the whole image layer
+	'overlay_opacity'  => 0.35,      // black overlay on top of the image
+	'accent'           => '#ffc107', // highlight colour, 6-digit hex
+	'og_title'         => null,      // null = use title
+	'og_description'   => 'D-FAULT PARKED',
+	'ga_id'            => '',        // Google Analytics ID, '' = off
+];
+
+// ---------------------------------------------------------------------
+// 3. Domains — only what differs from $defaults
+// ---------------------------------------------------------------------
+// Opacities stay listed on every domain because they're tuned per image.
 $configs = [
 	'arksanity.com' => [
 		'title'				=> 'Arksanity Server',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/arksanity.jpg',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.50,
@@ -17,7 +49,6 @@ $configs = [
 	],
 	'brutalina.com' => [
 		'title'				=> 'Brutalina the Movie',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/brutalina.jpg',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.50,
@@ -26,7 +57,6 @@ $configs = [
 	],
 	'compoundcomplex.com' => [
 		'title'				=> 'Compound Complex',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/compoundcomplex.jpg',
 		'bg_opacity'		=> 0.60,
 		'overlay_opacity'	=> 0.75,
@@ -35,7 +65,6 @@ $configs = [
 	],
 	'cybabes.org' => [
 		'title'				=> 'Cybabes Society',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/cybabes.png',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.55,
@@ -44,7 +73,6 @@ $configs = [
 	],
 	'cybocop.com' => [
 		'title'				=> 'Cybo Cop (TV Series)',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/cybocop.png',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.35,
@@ -53,7 +81,6 @@ $configs = [
 	],
 	'dahlskebank.com' => [
 		'title'				=> 'Dahlske Bank',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/dahlskebank.png',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.25,
@@ -62,7 +89,6 @@ $configs = [
 	],
 	'danieldahl.com' => [
 		'title'				=> 'Daniel Dahl',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/danieldahl.png',
 		'bg_opacity'		=> 0.55,
 		'overlay_opacity'	=> 0.65,
@@ -71,7 +97,6 @@ $configs = [
 	],
 	'darkdictator.com' => [
 		'title'				=> 'The Dark Dictator',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/darkdictator.png',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.50,
@@ -80,7 +105,6 @@ $configs = [
 	],
 	'fatalityfacilitator.com' => [
 		'title'				=> 'Fatality Facilitator',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/fatalityfacilitator.jpg',
 		'bg_opacity'		=> 0.35,
 		'overlay_opacity'	=> 0.00,
@@ -89,7 +113,6 @@ $configs = [
 	],
 	'iliketomovie.com' => [
 		'title'				=> 'I Like To Movie',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/iliketomovie.png',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.50,
@@ -98,7 +121,6 @@ $configs = [
 	],
 	'iliveagain.com' => [
 		'title'				=> 'I Live Again',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/iliveagain.png',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.50,
@@ -107,7 +129,6 @@ $configs = [
 	],
 	'kennywang.com' => [
 		'title'				=> 'Kenny Wang',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/kennywang.png',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.50,
@@ -116,7 +137,6 @@ $configs = [
 	],
 	'kiande.com' => [
 		'title'				=> 'KiAnDe',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/kiande.png',
 		'bg_opacity'		=> 0.50,
 		'overlay_opacity'	=> 0.50,
@@ -125,7 +145,6 @@ $configs = [
 	],
 	'killingheat.com' => [
 		'title'				=> 'Killing Heat',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/killingheat.png',
 		'bg_opacity'		=> 0.65,
 		'overlay_opacity'	=> 0.25,
@@ -134,7 +153,6 @@ $configs = [
 	],
 	'marxisthunter.com' => [
 		'title'				=> 'Marxist Hunter',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/marxisthunter.png',
 		'bg_opacity'		=> 0.50,
 		'overlay_opacity'	=> 0.30,
@@ -143,7 +161,6 @@ $configs = [
 	],
 	'meatfetish.com' => [
 		'title'				=> 'Meat Fetish',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/meatfetish.png',
 		'bg_opacity'		=> 0.45,
 		'overlay_opacity'	=> 0.20,
@@ -152,7 +169,6 @@ $configs = [
 	],
 	'meatsex.org' => [
 		'title'				=> 'Meat Sex',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/meatsex.jpg',
 		'bg_opacity'		=> 0.45,
 		'overlay_opacity'	=> 0.30,
@@ -161,7 +177,6 @@ $configs = [
 	],
 	'meloslave.com' => [
 		'title'				=> 'Meloslave',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/meloslave.png',
 		'bg_opacity'		=> 0.75,
 		'overlay_opacity'	=> 0.25,
@@ -170,7 +185,6 @@ $configs = [
 	],
 	'reservedekk.no' => [
 		'title'				=> 'Reservedekk',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/reservedekk.png',
 		'bg_opacity'		=> 0.55,
 		'overlay_opacity'	=> 0.20,
@@ -179,7 +193,6 @@ $configs = [
 	],
 	'zombiefetish.com' => [
 		'title'				=> 'Zombie Fetish',
-		'ga_id'				=> '',
 		'background_image'	=> '/img/zombiefetish.jpg',
 		'bg_opacity'		=> 0.35,
 		'overlay_opacity'	=> 0.00,
@@ -188,12 +201,15 @@ $configs = [
 	],
 ];
 
-$settings = $configs[$domain] ?? [
-	'title'				=> 'Coming Soon',
-	'ga_id'				=> '',
-	'background_image'	=> '',
-	'bg_opacity'		=> 0.50,
-	'overlay_opacity'	=> 0.35,
-	'og_title'			=> 'Coming Soon',
-	'og_description'	=> 'D-FAULT PARKED'
-];
+// ---------------------------------------------------------------------
+// 4. This request's settings
+// ---------------------------------------------------------------------
+// $isKnown is false for any host not listed above: a typo, a bare IP, or
+// someone else's domain pointed at this server. The templates then send
+// noindex and skip canonical/OG tags, so search engines never index this
+// page under a domain we don't own.
+$isKnown  = isset($configs[$domain]);
+$settings = array_merge($defaults, $configs[$domain] ?? []);
+if ($settings['og_title'] === null) {
+	$settings['og_title'] = $settings['title'];
+}
