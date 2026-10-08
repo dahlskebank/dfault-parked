@@ -119,6 +119,9 @@ else
 	trap stop_local EXIT
 fi
 IMG="$(cd "$ROOT/img" && ls | head -1)"
+# Production blocks .git, .env, .gitignore and .svn itself, with its own
+# 403 page, before our .htaccess runs. Live, those only need the 403.
+HOST_403_TEXT="Access Denied"; [ -n "$PROD_IP" ] && HOST_403_TEXT=""
 
 # Pages
 expect "home page"               https "$D" /                200 "" "Coming Soon"
@@ -133,7 +136,7 @@ expect "bot probe xmlrpc"        https "$D" /xmlrpc.php      404 "" "Page Not Fo
 # www -> bare domain, path and query kept
 expect "www -> bare"             http "www.$D" /             301 "https://$D/"
 expect "www keeps path+query"    http "www.$D" "/a/b?c=1"    301 "https://$D/a/b?c=1"
-expect "www + blocked path"      http "www.$D" /.git/HEAD    403 "" "Access Denied"
+expect "www + blocked path"      http "www.$D" /.git/HEAD    403 "" "$HOST_403_TEXT"
 expect "www + config.php"        http "www.$D" /config.php   403 "" "Access Denied"
 
 # Blocked paths
@@ -147,9 +150,10 @@ expect "_tests blocked"          https "$D" /_tests/check.php 403 "" "Access Den
 expect "_docs file blocked"      https "$D" /_docs/2026-10-07-parked-refactor-design.md 403 "" "Access Denied"
 expect "_originals file blocked" https "$D" /_originals/img/kiande.png 403 "" "Access Denied"
 expect "_tests file blocked"     https "$D" /_tests/probe.sh 403 "" "Access Denied"
-expect ".git blocked"            https "$D" /.git/HEAD       403 "" "Access Denied"
-expect ".gitignore blocked"      https "$D" /.gitignore      403 "" "Access Denied"
-expect ".env blocked"            https "$D" /.env            403 "" "Access Denied"
+expect "dot-path blocked by us"  https "$D" /.foo            403 "" "Access Denied"
+expect ".git blocked"            https "$D" /.git/HEAD       403 "" "$HOST_403_TEXT"
+expect ".gitignore blocked"      https "$D" /.gitignore      403 "" "$HOST_403_TEXT"
+expect ".env blocked"            https "$D" /.env            403 "" "$HOST_403_TEXT"
 expect ".well-known not blocked" https "$D" /.well-known/x   404 "" "Page Not Found"
 
 # Security headers on 200, 403 and 404

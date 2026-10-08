@@ -27,7 +27,13 @@ RewriteRule ^(config\.php|partials/) - [F]
 RewriteRule ^_ - [F]
 # Anything starting with a dot (.git/, .gitignore, .env ...), except
 # .well-known/, which certificate checks and security.txt use.
+# (Production also blocks .git, .env and .svn itself, with its own page.)
 RewriteRule (^|/)\.(?!well-known/) - [F]
+
+# Missing .php files get our 404 page. Without this, the host's PHP
+# handler answers bot probes like /wp-login.php with a bare "Not Found".
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule \.php$ - [R=404,L]
 
 # ---------------------------------------------------------------------
 # 3. REDIRECTS
