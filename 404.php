@@ -13,7 +13,7 @@ $scripts   = [];
 require __DIR__ . '/partials/head.php';
 ?>
 
-		<main class="text-center">
-			<h1 class="display-1">404<br>Page Not Found</h1>
+		<main>
+			<h1 class="headline">404<br>Page Not Found</h1>
 		</main>
 <?php require __DIR__ . '/partials/footer.php'; ?>

@@ -13,7 +13,7 @@ $scripts   = [];
 require __DIR__ . '/partials/head.php';
 ?>
 
-		<main class="text-center">
-			<h1 class="display-1">403<br>Access Denied</h1>
+		<main>
+			<h1 class="headline">403<br>Access Denied</h1>
 		</main>
 <?php require __DIR__ . '/partials/footer.php'; ?>

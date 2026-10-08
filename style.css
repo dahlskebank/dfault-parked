@@ -1,82 +1,202 @@
 /*
 	Theme Name:		D-FAULT
-	Theme URI:		http://dfault.it/
+	Theme URI:		https://dfault.it/
 	Author:			Daniel Dahl
-	Author URI:		http://danieldahl.com/
-	Description:	D-FAULT
-	Version:		v26-0.0.2_parked
+	Author URI:		https://danieldahl.com/
+	Description:	D-FAULT PARKED
+	Version:		v26-0.1.0_parked
 	License:		WTFPL
 	License URI:	http://www.wtfpl.net/txt/copying/
-	Text Domain:
-	Tags:
 */
 
-/*--------------------------------------------------------------
->>> THEME CUSTOMIZATION STARTS HERE
---------------------------------------------------------------*/
-html footer a {
-	text-decoration: none !important;
+/* ==================================================================
+   Hand-written styles, no framework.
+   Per-domain values come from an inline <style> in partials/head.php:
+     --accent           text highlight (dfault amber on every domain)
+     --bg-gradient      this domain's gradient behind the image
+     --bg-image         url() of the background image
+     --bg-opacity       opacity of the image layer
+     --overlay-opacity  darkness of the black overlay on the image
+   ================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+	--text: #dee2e6;
+	--text-muted: rgba(222, 226, 230, 0.75);
+	--accent: #ffc107; /* fallback; head.php sets the real one */
+	--radius: 0.5rem;
+	--font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
 }
 
-html footer a:hover {
-	text-decoration: underline !important;
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 }
 
+body {
+	margin: 0;
+	font-family: var(--font);
+	font-size: 1rem;
+	line-height: 1.5;
+	color: var(--text);
+	/* This domain's gradient (set in head.php); Quartz's as the fallback */
+	background-color: #686dc3;
+	background-image: var(--bg-gradient, linear-gradient(90deg, #33b7e2, #5e62b0, #dc307c));
+	-webkit-text-size-adjust: 100%;
+}
+
+a {
+	color: var(--accent);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+/* ---------- 3. Background image layer ---------- */
+/* A fixed layer behind everything: overlay gradient on top of the image,
+   the whole layer faded so the body gradient shows through. With no
+   image, the variables are unset and only the body gradient shows. */
 .bg-image {
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+	inset: 0;
 	z-index: -1;
+	background-image:
+		linear-gradient(rgba(0, 0, 0, var(--overlay-opacity, 0)), rgba(0, 0, 0, var(--overlay-opacity, 0))),
+		var(--bg-image, none);
 	background-size: cover;
 	background-position: center;
-	background-attachment: fixed;
+	opacity: var(--bg-opacity, 1);
 }
 
-.card {
-	box-shadow:
-		0 8px 32px 0 rgba(0, 0, 0, 0.37),			/* my deep outer shadow */
-		1px 3px 24px -1px rgba(0, 0, 0, 0.15),		/* your soft outer */
-		inset 1px 1px rgba(255, 255, 255, 0.20),	/* your bright top-left highlight */
-		inset -1px -1px rgba(255, 255, 255, 0.10),	/* your soft bottom-right */
-		inset 0 1px 0 0 rgba(255, 255, 255, 0.15);	/* extra inner glow */
+/* ---------- 4. Page layout ---------- */
+/* Full-height column: main sits in the middle, footer at the bottom.
+   100dvh follows the visible screen while Chrome's address bar on
+   Android slides in and out; 100vh is the fallback. */
+.page {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding: 1rem 16px 0;
+	text-align: center;
 }
 
-.dd-fw4 span {
+main {
+	margin-block: auto;
+	padding-block: 2rem;
+}
+
+/* ---------- 5. Headline + tagline ---------- */
+.headline {
+	margin: 0 0 1rem;
+	font-size: clamp(2.6rem, 1.625rem + 4.5vw, 5rem);
+	font-weight: 300;
+	line-height: 1.2;
+	text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.headline span {
 	font-weight: 400;
+	color: var(--accent);
 }
 
-.display-1 {
-	text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
-}
-
-.card-title.display-1 {
-	margin-bottom: 0;
-	text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-}
-
-.card-footer {
-	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.75);
-}
-
-.lead,
-footer {
+.tagline {
+	margin: 0 0 1.5rem;
+	font-size: 1.25rem;
+	font-weight: 300;
 	text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.85);
 }
 
-@media only screen and (min-width: 991px) {
-	footer {
-		font-weight: 600;
-		padding-bottom: 2rem;
+/* ---------- 6. Countdown bar ---------- */
+/* One frosted-glass panel. Darker than Quartz's original frost, so the
+   amber numbers stay readable on bright images. */
+.countdown {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	max-width: 36rem;
+	margin: 0 auto;
+	border-radius: var(--radius);
+	background-color: rgba(0, 0, 0, 0.3);
+	background-image: linear-gradient(125deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06) 70%);
+	-webkit-backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px);
+	box-shadow:
+		inset 1px 1px rgba(255, 255, 255, 0.2),
+		inset -1px -1px rgba(255, 255, 255, 0.1),
+		0 8px 32px rgba(0, 0, 0, 0.37);
+}
+
+.countdown-unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0.75rem 0.25rem;
+}
+
+/* Thin divider between units */
+.countdown-unit + .countdown-unit {
+	border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.countdown-num {
+	font-size: clamp(1.8rem, 1.2rem + 3vw, 3.25rem);
+	font-weight: 300;
+	line-height: 1.1;
+	color: var(--accent);
+	/* Same-width digits, so the numbers don't wobble as they tick */
+	font-variant-numeric: tabular-nums;
+	text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.countdown-label {
+	margin-top: 0.25rem;
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.75);
+}
+
+/* ---------- 7. Footer ---------- */
+.site-footer {
+	padding-bottom: 1rem;
+	text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.85);
+}
+
+.site-footer p {
+	margin: 0;
+}
+
+.wide-only {
+	display: none;
+}
+
+/* ---------- 8. Breakpoint (matches Bootstrap's old lg: 992px) ---------- */
+@media (max-width: 991.98px) {
+	/* Second half of the headline and tagline on its own line */
+	.headline span,
+	.tagline span {
+		display: block;
 	}
 }
 
-@media only screen and (max-width: 992px) {
-	.col-6.col-lg-3 {
-		padding: 0px 5px;
+@media (min-width: 992px) {
+	.site-footer {
+		font-weight: 600;
+		padding-bottom: 2rem;
 	}
-	.card-body {
-		padding: 1rem;
+
+	.wide-only {
+		display: inline;
 	}
 }

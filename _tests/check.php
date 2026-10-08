@@ -154,6 +154,12 @@ foreach ($pages as $page => $p) {
 		check(strpos((string) $i['style'], "--accent: $wantAccent;") !== false, "$label --accent is not $wantAccent");
 		$wantCss = '--bg-gradient: linear-gradient(90deg, ' . implode(', ', $wantGrad) . ');';
 		check($wantGrad && strpos((string) $i['style'], $wantCss) !== false, "$label missing '$wantCss'");
+		check($i['h1_count'] === 1, "$label has {$i['h1_count']} <h1> elements, expected 1");
+		check(stripos($html, 'bootstrap') === false && stripos($html, 'bootswatch') === false, "$label still references Bootstrap");
+		$hasCountdown = strpos($html, 'id="days"') !== false;
+		$hasScript = (bool) preg_match('#<script src="/dfault\.js\?v=\d+"></script>#', $html);
+		check($hasCountdown === $p['home'], "$label countdown markup present: " . var_export($hasCountdown, true));
+		check($hasScript === $p['home'], "$label dfault.js loaded: " . var_export($hasScript, true));
 	}
 }
 
