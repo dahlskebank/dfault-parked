@@ -36,7 +36,8 @@ $description = $isKnown ? 'D-FAULT PARKED | Coming soon page for ' . $settings['
 // Only accept image paths shaped like /img/name.ext, because the value is
 // printed inside CSS, where HTML escaping doesn't protect anything.
 $bgImage = preg_match('#^/img/[\w.-]+$#', $settings['background_image']) ? $settings['background_image'] : '';
-$accent  = color_or($settings['accent'], $defaults['accent']);
+$accent   = color_or($settings['accent'], $defaults['accent']);
+$gradient = gradient_or($settings['gradient'], $defaults['gradient']);
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-100" data-bs-theme="dark">
@@ -47,7 +48,7 @@ $accent  = color_or($settings['accent'], $defaults['accent']);
 
 	<meta name="description" content="<?= e($description) ?>">
 	<!-- Tints Chrome's toolbar on Android in this domain's colour -->
-	<meta name="theme-color" content="<?= e($accent) ?>">
+	<meta name="theme-color" content="<?= e($gradient[0]) ?>">
 	<!-- <meta name="author" content="Daniel Dahl"> -->
 	<meta name="robots" content="<?= e($robots) ?>" />
 	<title><?= e($fullTitle) ?></title>
@@ -74,7 +75,10 @@ $accent  = color_or($settings['accent'], $defaults['accent']);
 	</script>
 <?php endif; ?>
 	<style>
-		:root { --accent: <?= $accent ?>; }
+		:root {
+			--accent: <?= $accent ?>;
+			--bg-gradient: linear-gradient(90deg, <?= implode(', ', $gradient) ?>);
+		}
 <?php if ($bgImage !== ''): ?>
 		.bg-image {
 			background-image:

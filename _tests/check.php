@@ -130,6 +130,8 @@ foreach ($pages as $page => $p) {
 		$img   = $s['background_image'];
 		$url   = "https://$key/";
 		$wantAccent = strtolower($s['accent']);
+		$wantGrad   = array_map('strtolower', $s['gradient'] ?? []);
+		$wantTheme  = $wantGrad[0] ?? '(no gradient in config)';
 
 		check($err === '', "$label PHP printed: " . strtok($err, "\n"));
 		check($i['title'] === ($known ? "{$s['title']} | {$p['suffix']}" : $p['suffix']), "$label title is '{$i['title']}'");
@@ -147,8 +149,11 @@ foreach ($pages as $page => $p) {
 		if ($img) {
 			check(is_file($root . $img), "$label background image file missing: $img");
 		}
-		check($i['theme'] === $wantAccent, "$label theme-color is '{$i['theme']}', expected $wantAccent");
+		// The address bar takes the gradient's first colour; text keeps the accent.
+		check($i['theme'] === $wantTheme, "$label theme-color is '{$i['theme']}', expected $wantTheme");
 		check(strpos((string) $i['style'], "--accent: $wantAccent;") !== false, "$label --accent is not $wantAccent");
+		$wantCss = '--bg-gradient: linear-gradient(90deg, ' . implode(', ', $wantGrad) . ');';
+		check($wantGrad && strpos((string) $i['style'], $wantCss) !== false, "$label missing '$wantCss'");
 	}
 }
 
@@ -163,6 +168,20 @@ if (!$dumpOnly) {
 		check(color_or(null, '#ffc107') === '#ffc107', 'color_or handles a missing value');
 	} else {
 		check(false, 'color_or() is not defined in partials/helpers.php');
+	}
+	if (function_exists('gradient_or')) {
+		$fb = ['#33b7e2', '#5e62b0', '#dc307c'];
+		check(gradient_or(['#A53E1D', '#7e741b'], $fb) === ['#a53e1d', '#7e741b'], 'gradient_or keeps two valid colours, lower-cased');
+		check(gradient_or(['#a53e1d', '#7e741b', '#1b637e', '#3d170b'], $fb) === ['#a53e1d', '#7e741b', '#1b637e', '#3d170b'], 'gradient_or allows four colours');
+		check(gradient_or(['#a53e1d'], $fb) === $fb, 'gradient_or needs at least two colours');
+		check(gradient_or(['#111111', '#222222', '#333333', '#444444', '#555555'], $fb) === $fb, 'gradient_or allows at most four colours');
+		check(gradient_or(['#a53e1d', 'red'], $fb) === $fb, 'gradient_or rejects a bad colour');
+		check(gradient_or(['#a53e1d', ['#7e741b']], $fb) === $fb, 'gradient_or rejects a nested array');
+		check(gradient_or('#a53e1d', $fb) === $fb, 'gradient_or rejects a plain string');
+		check(gradient_or(['#a53e1d', '#7e741b);}body{display:none'], $fb) === $fb, 'gradient_or rejects CSS injection');
+		check(gradient_or(null, $fb) === $fb, 'gradient_or handles a missing value');
+	} else {
+		check(false, 'gradient_or() is not defined in partials/helpers.php');
 	}
 }
 

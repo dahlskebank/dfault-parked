@@ -25,3 +25,20 @@ function color_or($value, $fallback) {
 	$value = strtolower(trim((string) $value));
 	return preg_match('/^#[0-9a-f]{6}$/', $value) ? $value : $fallback;
 }
+
+// gradient_or(): return $value as a list of 2–4 lowercase hex colours for
+// the background gradient, or $fallback if it isn't exactly that.
+function gradient_or($value, $fallback) {
+	if (!is_array($value) || count($value) < 2 || count($value) > 4) {
+		return $fallback;
+	}
+	$colours = [];
+	foreach ($value as $colour) {
+		$colour = is_string($colour) ? color_or($colour, null) : null;
+		if ($colour === null) {
+			return $fallback;
+		}
+		$colours[] = $colour;
+	}
+	return $colours;
+}

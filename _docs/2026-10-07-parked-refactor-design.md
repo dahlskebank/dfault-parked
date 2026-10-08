@@ -230,3 +230,18 @@ Each step ends with a commit.
 3. Images, then accent colours (swatch approval gate). Once approved, the accents go into `config.php`, and `--accent` and `theme-color` are wired up.
 4. Remove Bootstrap, add the new `style.css` and countdown bar. Also: the single-`<h1>` markup, footer entities instead of icons, and the `dfault.js` cleanup.
 5. README update.
+
+## Amendment 2026-10-08: colour
+
+These changes replace parts of sections 4 and 5. They were decided at the colour approval stop, after the planned accent picker produced near-white pastels.
+
+- **Text colour:** dfault amber `#ffc107` on every domain, for "Coming Soon", the countdown numbers and the footer links. Daniel: "that's the dfault orange construction color". `accent` lives only in `$defaults`.
+- **Per-domain colour:**
+  - Each domain gets its own background gradient, which replaces the fixed Quartz gradient behind the image.
+  - The config key is `'gradient' => ['#c1', '#c2']`: the image's two strongest distinct hues, darkened so the amber stays readable.
+  - Unknown hosts keep Quartz's `['#33b7e2', '#5e62b0', '#dc307c']`.
+  - The black overlay is unchanged.
+- **`theme-color`:** the gradient's first colour, so the Android address bar tints per domain.
+- **Countdown bar:** the glass is slightly darker so the amber numbers read well: `linear-gradient(125deg, rgba(255,255,255,.12), rgba(255,255,255,.06) 70%)` over `rgba(0,0,0,.3)`, still blurred 5px.
+- **Validation:** `gradient_or()` accepts 2–4 valid hex colours, otherwise it falls back to the default.
+- **Review:** Daniel reviews the gradient colours live after deploy. There's no swatch sheet before applying.
