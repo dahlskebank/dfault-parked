@@ -41,6 +41,21 @@ bash _tests/probe.sh                                                        # .h
 bash _tests/probe.sh --prod kiande.com                                      # live server, read-only (after deploy)
 ```
 
+## Deploying
+
+The parked domains are served from `/home/6/d/dxdno/___prk` on the Domeneshop account (`dxdno@login.domeneshop.no`, key `/e/www/dd_db_domeneshop`). There's no build step and no `deploy.sh`. Upload the site files with `sftp`. Never upload `.git/`, `_docs/`, `_originals/`, `_tests/`, `README.md` or `LICENSE`.
+
+Upload in this order, so the live site is never half old and half new for more than a few seconds: `img/`, then `partials/`, `style.css`, `dfault.js` and `robots.txt`, then `config.php`, then the three pages, and `.htaccess` last.
+
+Afterwards, run `bash _tests/probe.sh --prod kiande.com`.
+
+What production looks like (checked 2026-10-08):
+
+- nginx sits in front of Apache and already redirects `http://` to `https://`.
+- PHP runs through FPM.
+- The host blocks `.git`, `.env` and `.svn` itself.
+- The `www.` hostnames aren't connected to the folder yet, so they show Domeneshop's "not found" page.
+
 ## License
 
 [WTFPL](LICENSE)
