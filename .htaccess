@@ -32,17 +32,26 @@ RewriteRule (^|/)\.(?!well-known/) - [F]
 # ---------------------------------------------------------------------
 # 3. REDIRECTS
 # ---------------------------------------------------------------------
+# Both redirects check REDIRECT_STATUS first. It's empty on the visitor's
+# own request and set on Apache's internal passes (like loading the 403
+# page after a block), which must never be redirected.
+#
+# Targets are written as https:// on purpose: the host's nginx handles
+# HTTPS and talks plain HTTP to Apache, so a relative target would send
+# visitors to http:// first.
+
 # www.example.com/anything -> https://example.com/anything. One rule
 # covers every parked domain: %1 is whatever followed "www.", minus
 # any :port.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
 RewriteCond %{HTTP_HOST} ^www\.([^:]+)(:\d+)?$ [NC]
 RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L,NE]
 
-# /index.php -> / so the page has one address. The REDIRECT_STATUS test
-# skips Apache's internal passes (like loading an error page); only the
-# visitor's own request may trigger the redirect.
+# /index.php -> / so the page has one address. %1 is the domain from
+# the Host header, minus any :port.
 RewriteCond %{ENV:REDIRECT_STATUS} ^$
-RewriteRule ^index\.php$ / [R=301,L]
+RewriteCond %{HTTP_HOST} ^([^:]+)
+RewriteRule ^index\.php$ https://%1/ [R=301,L]
 
 # ---------------------------------------------------------------------
 # 4. SECURITY HEADERS
@@ -61,8 +70,12 @@ RewriteRule ^index\.php$ / [R=301,L]
 # ---------------------------------------------------------------------
 # 5. COMPRESSION (gzip text files; JPGs are already compressed)
 # ---------------------------------------------------------------------
+# AddOutputFilterByType needs mod_filter as well; without that guard a
+# server lacking it would answer every request with a 500 error.
 <IfModule mod_deflate.c>
-	AddOutputFilterByType DEFLATE text/html text/css text/plain text/javascript application/javascript image/svg+xml image/x-icon image/vnd.microsoft.icon
+	<IfModule mod_filter.c>
+		AddOutputFilterByType DEFLATE text/html text/css text/plain text/javascript application/javascript image/svg+xml image/x-icon image/vnd.microsoft.icon
+	</IfModule>
 </IfModule>
 
 # ---------------------------------------------------------------------

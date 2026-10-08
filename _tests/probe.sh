@@ -114,7 +114,7 @@ if [ "${1:-}" = "--prod" ]; then
 	expect "http -> https (host level)" http "$D" / 301 "https://$D/"
 else
 	D="kiande.com"
-	SELF="http://$D"
+	SELF="https://$D"   # redirects always target https: nginx terminates TLS in production
 	start_local
 	trap stop_local EXIT
 fi
@@ -133,6 +133,8 @@ expect "bot probe xmlrpc"        https "$D" /xmlrpc.php      404 "" "Page Not Fo
 # www -> bare domain, path and query kept
 expect "www -> bare"             http "www.$D" /             301 "https://$D/"
 expect "www keeps path+query"    http "www.$D" "/a/b?c=1"    301 "https://$D/a/b?c=1"
+expect "www + blocked path"      http "www.$D" /.git/HEAD    403 "" "Access Denied"
+expect "www + config.php"        http "www.$D" /config.php   403 "" "Access Denied"
 
 # Blocked paths
 expect "config.php blocked"      https "$D" /config.php      403 "" "Access Denied"
@@ -141,6 +143,10 @@ expect "partial file blocked"    https "$D" /partials/head.php 403 "" "Access De
 expect "_docs blocked"           https "$D" /_docs/          403 "" "Access Denied"
 expect "_originals blocked"      https "$D" /_originals/     403 "" "Access Denied"
 expect "_tests blocked"          https "$D" /_tests/check.php 403 "" "Access Denied"
+# Static files too: in production nginx may serve these without asking Apache.
+expect "_docs file blocked"      https "$D" /_docs/2026-10-07-parked-refactor-design.md 403 "" "Access Denied"
+expect "_originals file blocked" https "$D" /_originals/img/kiande.png 403 "" "Access Denied"
+expect "_tests file blocked"     https "$D" /_tests/probe.sh 403 "" "Access Denied"
 expect ".git blocked"            https "$D" /.git/HEAD       403 "" "Access Denied"
 expect ".gitignore blocked"      https "$D" /.gitignore      403 "" "Access Denied"
 expect ".env blocked"            https "$D" /.env            403 "" "Access Denied"
